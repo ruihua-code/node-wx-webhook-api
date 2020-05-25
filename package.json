@@ -1,0 +1,16 @@
+{
+  "name": "wx-webhook-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "zhangruihua",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "dayjs": "^1.8.27"
+  },
+  "devDependencies": {},
+  "description": ""
+}
