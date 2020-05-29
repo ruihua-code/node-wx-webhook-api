@@ -20,8 +20,8 @@ setInterval(async () => {
                 url: ele.href
             }
         });
-        console.log('url:', newsUrl.url)
-        await page.goto(newsUrl.url, { timeout: 60000 });
+        console.log('url:', newsUrl.url)        
+        await page.goto(newsUrl.url, { timeout: 0, waitUntil: 'load' });
         const newsContent = await page.evaluate(() => {
             let ele = document.getElementsByClassName('quote-content')[0]
             return {
