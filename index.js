@@ -7,7 +7,7 @@ setInterval(async () => {
     console.log(currentTime)
     /*每天10点执行一次*/
     if (currentTime == '10:00') {
-        const browser = await puppeteer.launch({ headless: false })
+        const browser = await puppeteer.launch({ args: ['--no-sandbox'] })
         const browserWSEndpoint = browser.wsEndpoint();
         browser.disconnect();
         // 使用节点来重新建立连接
@@ -21,16 +21,22 @@ setInterval(async () => {
             }
         });
         console.log('url:', newsUrl.url)
-        await page.goto(newsUrl.url);
+        await page.goto(newsUrl.url, { timeout: 60000 });
         const newsContent = await page.evaluate(() => {
             let ele = document.getElementsByClassName('quote-content')[0]
             return {
                 content: ele.innerText
             }
         });
+        let data = {
+            msgtype: 'text',
+            text: {
+                content: newsContent.content
+            }
+        }
         await browser2.close()
         console.log('新闻内容:', newsContent)
-        axios.post(wxConfig.wxWebhook, newsContent)
+        axios.post(wxConfig.wxWebhook, data)
     }
 }, 1000 * 60);
 
