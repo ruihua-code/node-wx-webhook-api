@@ -10,28 +10,27 @@ setInterval(async () => {
         const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'], timeout: 50000 })
         const browserWSEndpoint = browser.wsEndpoint();
         browser.disconnect();
-        // 使用节点来重新建立连接
+        /* 使用节点来重新建立连接 */
         const browser2 = await puppeteer.connect({ browserWSEndpoint });
         let page = await browser2.newPage()
-        await page.goto('https://sports.sohu.com/s/cba', { timeout: 0 });
+        await page.goto('https://nba.hupu.com/', { timeout: 0 });
         const newsContent = await page.evaluate(() => {
-            let ele = document.getElementsByClassName('news-list')[0]
-            return {
-                content: ele ? ele.innerText : '暂无新闻'
-            }
+            let ele = document.querySelectorAll('.list-news .list-item a')
+            return [...ele].map((item) => {
+                return {
+                    content: item.innerText
+                }
+            })
         })
-        // console.log('url:', newsUrl.url)
-        // await page.goto(newsUrl.url, { timeout: 0, waitUntil: 'load' });
-        // const newsContent = await page.evaluate(() => {
-        //     let ele = document.getElementsByClassName('quote-content')[0]
-        //     return {
-        //         content: ele.innerText
-        //     }
-        // });
+
+        let con = ''
+        newsContent.forEach(ele => {
+            con += `${ele.content}\r\n\r\n`
+        })
         let data = {
             msgtype: 'text',
             text: {
-                content: newsContent.content
+                content: con
             }
         }
         await browser2.close()
